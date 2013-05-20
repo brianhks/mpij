@@ -1,0 +1,68 @@
+/*
+ * Copyright (c) 2013, Brian Hawkins
+ * Permission is granted to use this code without restriction as long
+ * as this copyright notice appears in all source files.
+ */
+ 
+import tablesaw.*;
+import tablesaw.addons.java.*;
+
+//make.setProperty("cpmake.multiThreadOutput", "true");
+ 
+bldoutdir = "build";
+srcdir = "src";
+tstsrc = "test";
+
+jp = new JavaProgram().setProgramName("mpij")
+		.setSourceDirectory(srcdir)
+		.noTests().setup();
+
+/*
+//-------------------------------------------------------------------
+//==-- USE JavaCompiler TO COMPILE TEST FILES --==
+tstjc = new JavaCompiler(tstsrc, testdir, classpath);
+tstClassFiles = tstjc.getClassFiles();
+
+
+//-------------------------------------------------------------------
+//==-- CREATE JAVADOCS --==
+make.createPhonyRule("javadoc", "doc", "javadoc");
+void javadoc(String target, String[] prereqs)
+	{
+	make.exec(srcdir, "javadoc -public -d ../doc "+make.arrayToString(sourceFiles), true);
+	}
+	
+//-------------------------------------------------------------------
+//==-- TEST --==
+make.createPhonyRule("testbld", new String[] {jarfile, tstjar}, null);
+make.createPhonyRule("test", "testbld", "test");
+void test(String target, String[] prereqs)
+	{
+	make.setProperty("cpmake.multiThreadOutput", "true");
+	print("Running test");
+	
+	//copy jar file to other server
+	*//*make.exec("scp "+jarfile+" linux:");
+	make.exec("scp "+tstjar+" linux:");
+	
+	make.setProperty("cpmake.multiThreadOutput", "true");
+	make.exec("java -cp "+jarfile+File.pathSeparator+tstjar+
+			" Hotplate -MPIJrank 0 -MPIJhostname 192.168.1.20 -MPIJnumprocs 2 "+
+			"-p4pg Hotplate.p4pg -ssh");*//*
+			
+	//Uncomment the test you want to run
+	make.exec("java -cp "+jarfile+File.pathSeparator+tstjar+" mpij.internal.HotplateTest");
+	//make.exec("java -cp "+jarfile+File.pathSeparator+tstjar+" mpij.internal.MatrixMultTest");
+	//make.exec("java -cp "+jarfile+File.pathSeparator+tstjar+" mpij.internal.PostOfficeTest");
+	//make.exec("java -cp "+jarfile+File.pathSeparator+tstjar+" mpij.internal.CommunicatorTest");
+	//make.exec("java -cp "+jarfile+File.pathSeparator+tstjar+" mpij.internal.util.ByteBufferStreamTest");
+	//make.exec("java -cp "+jarfile+File.pathSeparator+tstjar+" mpij.msg.ObjectMessageTest");
+	//make.exec("java -cp "+jarfile+File.pathSeparator+tstjar+" mpij.msg.IntMessageTest");
+	
+	}	
+
+
+*/
+
+saw.setDefaultTarget("jar");
+

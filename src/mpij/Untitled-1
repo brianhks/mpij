@@ -1,0 +1,8 @@
+file = new BufferedReder(new FileReder("puzzle.txt");
+
+puzzle = new char[26][17];
+
+while (line = file.readLine() != null)
+	{
+	
+	}
