@@ -1,0 +1,1 @@
+MPIJ is an implementation of the message passing interface (MPI) in pure Java.
