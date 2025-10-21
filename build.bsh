@@ -5,17 +5,81 @@
  */
  
 import tablesaw.*;
+import tablesaw.rules.*;
 import tablesaw.addons.java.*;
+import tablesaw.addons.ivy.*;
 
-//make.setProperty("cpmake.multiThreadOutput", "true");
+
+version = "1.0";
  
 bldoutdir = "build";
-srcdir = "src";
-tstsrc = "test";
 
-jp = new JavaProgram().setProgramName("mpij")
-		.setSourceDirectory(srcdir)
-		.noTests().setup();
+saw.setProperty(JavaProgram.PROGRAM_VERSION_PROPERTY, version);
+
+
+jp = new JavaProgram().setup();
+
+
+ivy = new IvyAddon()
+	.addSettingsFile("ivysettings.xml")
+	.setup();
+
+pomRule = ivy.createPomRule("build/jar/pom.xml", ivy.getResolveRule("provided"))
+	.addDepend(jp.getJarRule())
+	.addLicense("The Apache Software License, Version 2.0", "http://www.apache.org/licenses/LICENSE-2.0.txt", "repo")
+	.addDeveloper("brianhks", "Brian", "brianhks1+mpij@gmail.com");
+
+//------------------------------------------------------------------------------
+//==-- Maven Artifacts --==
+mavenArtifactsRule = new SimpleRule("maven-artifacts").setDescription("Create maven artifacts for maven central")
+      .addSource(jp.getJarRule().getTarget())
+      .addSource(jp.getJavaDocJarRule().getTarget())
+      .addSource(jp.getSourceJarRule().getTarget())
+      .addSource("build/jar/pom.xml")
+      .setMakeAction("signArtifacts");
+
+void signArtifacts(Rule rule)
+{
+   for (String source : rule.getSources())
+   {   
+      cmd = "gpg -ab "+source;
+      saw.exec(cmd); 
+   }      
+}
+
+
+new JarRule("maven-bundle", "build/bundle.jar").setDescription("Create bundle for uploading to maven central")
+      .addDepend(mavenArtifactsRule)
+      .addFileSet(new RegExFileSet(saw.getProperty(JavaProgram.JAR_DIRECTORY_PROPERTY), ".*"));
+
+
+
+
+//------------------------------------------------------------------------------
+//==-- Publish Artifacts --==
+if (version.contains("SNAPSHOT"))
+   defaultResolver = "local-m2-publish-snapshot";
+else   
+   defaultResolver = "local-m2-publish";
+
+PublishRule publishRule = ivy.createPublishRule(saw.getProperty("ivy.publish_resolver", defaultResolver),
+         ivy.getResolveRule("compile"))
+      .setName("publish")
+      .setDescription("Publish pom and jar to maven snapshot repo")
+      .publishMavenMetadata()
+      .setOverwrite(true);
+
+publishRule.addArtifact(pomRule.getTarget())
+      .setType("pom")
+      .setExt("pom")
+      .setIsMetadata();
+publishRule.addArtifact(jp.getJarRule().getTarget())
+      .setType("jar")
+      .setExt("jar");
+
+
+
+
 
 /*
 //-------------------------------------------------------------------

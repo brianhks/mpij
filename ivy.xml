@@ -1,0 +1,12 @@
+<ivy-module version="2.0">
+	<info organisation="org.agileclick.mpij" module="mpij"/>
+	<configurations defaultconf="compile" defaultconfmapping="compile->default;provided->default;runtime->default">
+		<conf name="runtime"/>
+		<conf name="provided" extends="runtime"/>
+		<conf name="compile" extends="provided"/>
+	</configurations>
+
+	<dependencies>
+		
+	</dependencies>
+</ivy-module>
